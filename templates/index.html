@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <title>Plant Report</title>
+    <link rel="stylesheet" href="{% static 'jquery.dataTables.min.js' %}">
+</head>
+
+{#<head>#}
+{#            <input type="button" id='script' name="scriptbutton" value=" Run Script " onclick="exec('python views.py');">#}
+{#</head>#}
+<h1> Chiller Plant Report  </h1>
+<img src = "{% static 'images/output.png' %}" alt="fail to load image">
+<body>
+               <table id="userTable">
+                 <thead>
+                    <th>Tag ID</th>
+                    <th>Time Record</th>
+                    <th>Flow</th>
+                    <th>Energy</th>
+                    <th>Chiller Eff</th>
+                    <th>Level</th>
+                    <th>Pressure</th>
+                    <th>Temperature</th>
+
+                <tbody>
+                        {% for i in arr_users %}
+                            <tr>
+                                <td>{{i.ID}}</td>
+                                <td>{{i.TIME}}</td>
+                                <td>{{i.FLOW}}</td>
+                                <td>{{i.ENERGY}}</td>
+                                <td>{{i.CHEFF}}</td>
+                                <td>{{i.LEVEL}}</td>
+                                <td>{{i.PRESS}}</td>
+                                <td>{{i.TEMP}}</td>
+                            </tr>
+                        {% endfor %}
+                </tbody>
+              </table>
+
+</body>
+</html>
