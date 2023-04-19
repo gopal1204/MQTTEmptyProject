@@ -1,14 +1,20 @@
-from http import client
 
+from http import client
 from django.shortcuts import render
 import pandas as pd
-import matplotlib.pyplot as plt
-# Create your views here.
-# python3.6
-
 import random
-
 from paho.mqtt import client as mqtt_client
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import Template, Context
+import datetime
+
+
+import time
+
+# python3.6
+data = ''
+
 
 broker = 'broker.emqx.io'
 port = 1883
@@ -18,13 +24,13 @@ client_id = f'python-mqtt-{random.randint(0, 100)}'
 username = 'emqx'
 password = 'public'
 
-
 def connect_mqtt() -> mqtt_client:
-    def on_connect(client, flags, rc):
-        if rc == 0:
-            print("Connected to MQTT Broker!")
-        else:
-            print("Failed to connect, return code %d\n", rc)
+    def on_connect(client, userdata, flags, rc):
+            if rc == 0:
+                print("Connected to MQTT Broker!")
+            else:
+                print("Failed to connect, return code %d\n", rc)
+
 
     client = mqtt_client.Client(client_id)
     client.username_pw_set(username, password)
@@ -33,29 +39,36 @@ def connect_mqtt() -> mqtt_client:
     return client
 
 
-def subscribe(client: mqtt_client):
-    def on_message(client, userdata, message):
-        print("received message =", str(message.payload.decode("utf-8")))
-        received_messages = [message]
-        message = received_messages.pop()
-        datatohtml11 = str(message.payload.decode("utf-8")
+
+def on_message(client, userdata, msg):
+    global data
+    data = msg.payload.decode('utf8')
+    # userdata = msg.payload.decode('utf8')
+    # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+    print(data)
 
     client.subscribe(topic)
     client.on_message = on_message
-
+    return data
 
 def run():
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
 
+def output(request):
+
+    now = datetime.datetime.now()
+    person = "MQTT Results" + data
+    context = {
+        'person': person,
+        'current_date': now.date(),
+    }
+    return render(request, 'mytemp.html', context)
+
 
 if __name__ == '__main__':
     run()
+    output()
 
-datatohtml11 = str(message.payload.decode("utf-8")
 
-
-def output(request):
-    my_dict = {"arr_users": datatohtml11, "img_name": "output.png"}
-    return render(request, 'index.html', context=my_dict)
